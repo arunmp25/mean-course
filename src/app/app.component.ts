@@ -9,7 +9,7 @@ export class AppComponent {
   title = 'app';
   enteredPosts = [];
 
-  onPostCreated(post) {
-    this.enteredPosts.push(post);
-  }
+  // onPostCreated(post) {
+  //   this.enteredPosts.push(post);
+  // }
 }
