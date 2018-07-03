@@ -42,15 +42,28 @@ export class PostService {
   }
 
   addPosts(post: Posts) {
-     this.http.post<{message: String}>('http://localhost:3000/api/posts', post)
+     this.http.post<{postId: string, message: string}>('http://localhost:3000/api/posts', post)
            .subscribe((responseData) => {
                console.log(responseData.message);
                // This will be updated only if server update
-               // is succesfull, this method get exeuted only if
+               // is succesfull, this method gets exeuted only if
                // there is a succesfull response
+               console.log(responseData.postId);
+               post.id = responseData.postId;
                this.posts.push(post);
                this.postsUpdated.next([...this.posts]);
            });
+  }
+
+  deletePost(postId: string) {
+    console.log(postId);
+      this.http.delete('http://localhost:3000/api/posts/' + postId)
+      .subscribe(() => {
+        const updatedPosts = this.posts.filter(post => post.id !== postId);
+        this.posts = updatedPosts;
+        this.postsUpdated.next([...this.posts]);
+         console.log(' post deleted ');
+      });
   }
 
 

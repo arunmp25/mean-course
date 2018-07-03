@@ -35,11 +35,14 @@ app.post('/api/posts',(request,response,next) => {
            title: request.body.title,
            content: request.body.content
         });
-        post.save();
-        console.log(post);
-       response.status(201).json({
-         message: 'Post Added successfully'
-       });
+        post.save().then((result) => {
+          console.log("result " ,result);
+          response.status(201).json({
+            message: 'Post Added successfully',
+            postId : result._id
+          });
+        });
+
 });
 
 app.get('/api/posts',(request,response,next) => {
@@ -52,6 +55,14 @@ app.get('/api/posts',(request,response,next) => {
         });
       })
  //response.send('Response from Express');
+});
+
+app.delete('/api/posts/:id',(request,response,next) => {
+  console.log("id :" +request.params.id );
+  Post.deleteOne({_id:request.params.id}).then(result => {
+     console.log(result);
+      response.status(200).json({message: "Post Deleted"});
+  });
 });
 
 
