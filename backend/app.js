@@ -1,7 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const Post = require('./models/post')
 
 const app = express();
+//Mongo Db Connection String
+//mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+mongoose.connect("mongodb://localhost:27017/meandb?retryWrites=true")
+        .then(()=>{
+          console.log("Connection established");
+        })
+        .catch((e)=>{
+          console.log("Error while connecting");
+        })
 
 app.use(bodyParser.json({ type: 'application/json'}));
 //app.use(bodyParser.urlencoded({encoded: false}));
@@ -18,35 +30,27 @@ app.use((request,response,next) =>{
 });
 
 app.post('/api/posts',(request,response,next) => {
-       const post = request.body;
+      // const post = request.body;
+        const post = new Post({
+           title: request.body.title,
+           content: request.body.content
+        });
+        post.save();
+        console.log(post);
        response.status(201).json({
          message: 'Post Added successfully'
        });
 });
 
 app.get('/api/posts',(request,response,next) => {
-  const posts =[
-    {
-      id: '1',
-      title: 'First Server side post',
-      content: 'This is comming from server'
-    },
-    {
-      id: '2',
-      title: 'Second Server side post',
-      content: 'This is comming from server 2'
-    },
-    {
-      id: '3',
-      title: 'Third Server side post',
-      content: 'This is comming from server 3'
-    }
-  ];
 
-  response.status(200).json({
-    message:'Posts fetched successfully from server',
-    posts: posts
-  });
+  Post.find()
+      .then(documents=>{
+        response.status(200).json({
+          message:'Posts fetched successfully from server',
+          posts: documents
+        });
+      })
  //response.send('Response from Express');
 });
 

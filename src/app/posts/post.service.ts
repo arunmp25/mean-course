@@ -2,6 +2,7 @@ import { Posts } from './post.model';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class PostService {
@@ -14,9 +15,24 @@ export class PostService {
   private postsUpdated = new Subject<Posts[]>();
 
   getPosts() {
-    this.http.get<{message: String, posts: Posts[]}>('http://localhost:3000/api/posts')
-        .subscribe((postData) => {
-          this.posts = postData.posts;
+    // WE had defined the post model in angular side fromt end
+    // with an id , in the back end side mongo creates the document
+    // with '_id' in such case we need to map teh back end object to
+    // front end object as shown below
+
+    this.http.get<{message: String, posts: any}>
+    ('http://localhost:3000/api/posts')
+        .pipe(map((postData) => {
+           return postData.posts.map(post => {
+              return{
+                title : post.title,
+                content : post.content,
+                id : post._id
+              };
+           });
+        }))
+        .subscribe((transformedPosts) => {
+          this.posts = transformedPosts;
           this.postsUpdated.next([...this.posts]);
         });
   }
