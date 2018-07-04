@@ -41,6 +41,24 @@ export class PostService {
     return this.postsUpdated.asObservable();
   }
 
+  /**
+   * Method to retrive a single post given its id
+   * method return copy of teh post so that
+   * original object is not mpdified
+   * @param postId
+   */
+  getPost(postId: string) {
+    console.log(this.posts);
+    return {...this.posts.find(post => post.id === postId)};
+
+  }
+
+  updatePost(post: Posts) {
+    this.http.put('http://localhost:3000/api/posts/' + post.id, post )
+    .subscribe(response => console.log(response));
+
+  }
+
   addPosts(post: Posts) {
      this.http.post<{postId: string, message: string}>('http://localhost:3000/api/posts', post)
            .subscribe((responseData) => {

@@ -4,7 +4,7 @@
           <input  matInput
                   type='text'
                   name ='title'
-                  ngModel
+                  [ngModel]="post.title"
                   required
                   minlength='3'
                   placeholder="Title"
@@ -16,7 +16,7 @@
                   matInput
                   rows='6'
                   name='enteredValue'
-                  ngModel
+                  [ngModel] ="post.content"
                   required
                   placeholder="Post"
                   #enteredValue=ngModel>
