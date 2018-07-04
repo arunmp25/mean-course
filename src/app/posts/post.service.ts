@@ -47,9 +47,14 @@ export class PostService {
    * original object is not mpdified
    * @param postId
    */
-  getPost(postId: string) {
-    console.log(this.posts);
-    return {...this.posts.find(post => post.id === postId)};
+  // getPost(postId: string) {
+  //   console.log(this.posts);
+  //   return {...this.posts.find(post => post.id === postId)};
+
+  // }
+
+  getPostfromDB(postId: string) {
+    return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + postId );
 
   }
 

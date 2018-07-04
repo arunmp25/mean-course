@@ -60,7 +60,6 @@ app.put('/api/posts/:id',(request,response,next) =>{
 });
 
 app.get('/api/posts',(request,response,next) => {
-
   Post.find()
       .then(documents=>{
         response.status(200).json({
@@ -69,6 +68,16 @@ app.get('/api/posts',(request,response,next) => {
         });
       })
  //response.send('Response from Express');
+});
+
+app.get('/api/posts/:id',(request,response,next) => {
+   Post.findById(request.params.id).then(post => {
+     if(post){
+       response.status(200).json(post);
+     } else{
+       response.status(400).json({message: "POST NOT FOUND"});
+     }
+   })
 });
 
 app.delete('/api/posts/:id',(request,response,next) => {
